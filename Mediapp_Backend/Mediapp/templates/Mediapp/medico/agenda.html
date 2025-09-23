@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEDIAPP - Agenda Médica</title>
+    <link href="{% static 'Mediapp/css/comun.css' %}" rel="stylesheet">
+    <link href="{% static 'Mediapp/css/medico.css' %}" rel="stylesheet">
+</head>
+<body>
+    <!-- Header cargado dinámicamente -->
+    <div id="header-container"></div>
+
+    <main class="container agenda-page">
+        <h1>Mi Agenda</h1>
+        
+        <div class="agenda-controls">
+            <div class="date-navigation">
+                <button id="prev-week" class="btn btn-secondary">&lt;&lt;</button>
+                <h2 id="current-week"></h2>
+                <button id="next-week" class="btn btn-secondary"> &gt;&gt;</button>
+            </div>
+            
+            <div class="agenda-actions">
+                <button id="block-time" class="btn btn-warning">Reservar Horario</button>
+                <button id="refresh" class="btn btn-primary">Actualizar Agenda</button>
+            </div>
+        </div>
+        
+        <div class="agenda-container">
+            <div class="calendar-header">
+                <div class="time-column">Hora</div>
+                <div class="day-column">Lunes</div>
+                <div class="day-column">Martes</div>
+                <div class="day-column">Miércoles</div>
+                <div class="day-column">Jueves</div>
+                <div class="day-column">Viernes</div>
+                <div class="day-column">Sábado</div>
+            </div>
+            
+            <div class="calendar-body" id="time-slots">
+                <!-- Los slots de tiempo se generarán dinámicamente con JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para bloquear horario -->
+    <div id="block-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Reservar Horario</h2>
+            <form id="block-form">
+                <div class="form-group">
+                    <label for="block-date">Fecha:</label>
+                    <input type="date" id="block-date" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="block-start">Hora Inicio:</label>
+                    <input type="time" id="block-start" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="block-end">Hora Fin:</label>
+                    <input type="time" id="block-end" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="block-reason">Motivo (opcional):</label>
+                    <input type="text" id="block-reason" placeholder="Ej: Congreso médico">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Reservar Horario</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para ver detalles de cita -->
+    <div id="appointment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Detalles de la Cita</h2>
+            <div id="appointment-details">
+                <!-- Detalles se cargarán dinámicamente -->
+            </div>
+            <div class="modal-actions">
+                <button id="view-patient" class="btn btn-primary">Ver Paciente</button>
+                <button id="cancel-appointment" class="btn btn-danger">Cancelar Cita</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer-->
+    <div id="footer-container"></div>
+
+<script src="{% static 'Mediapp/js/loadComponents.js' %}"></script>
+<script>
+  // CSRF helper global
+  function getCSRFToken() {
+    const name = "csrftoken";
+    const cookie = document.cookie.split("; ").find(c => c.startsWith(name + "="));
+    return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
+  }
+</script>
+<script src="{% static 'Mediapp/js/medico.js' %}?v=2025-09-22-02"></script>
+
+
+</body>
+</html>

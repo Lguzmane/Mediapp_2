@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Viewport optimizado para responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0, user-scalable=yes">
+    <title>Admin - MediApp</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="{% static 'Mediapp/css/admin.css' %}" rel="stylesheet">
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <main class="admin-dashboard">
+        <div class="metrics-container">
+        <!-- Tarjetas superiores - Grid responsivo -->
+        <div class="dashboard-cards">
+            <div class="dashboard-card card-responsive">
+                <div class="card-body">
+                    <i class="bi bi-calendar-check card-icon card-icon-appointments"></i>
+                    <h6 class="card-title">Citas Hoy</h6>
+                    <p class="card-value" id="citas-hoy">0</p>
+                </div>
+            </div>
+            
+            <div class="dashboard-card card-responsive">
+                <div class="card-body">
+                    <i class="bi bi-heart-pulse card-icon card-icon-doctors"></i>
+                    <h6 class="card-title">Médicos</h6>
+                    <p class="card-value" id="medicos-activos">0</p>
+                </div>
+            </div>
+            
+            <div class="dashboard-card card-responsive">
+                <div class="card-body">
+                    <i class="bi bi-people card-icon card-icon-patients"></i>
+                    <h6 class="card-title">Pacientes</h6>
+                    <p class="card-value">0</p>
+                </div>
+            </div>
+            
+            <div class="dashboard-card card-responsive">
+                <div class="card-body">
+                    <i class="bi bi-clock-history card-icon card-icon-pending"></i>
+                    <h6 class="card-title">Pendientes</h6>
+                    <p class="card-value">0</p>
+                </div>
+            </div>
+        </div>
+</div>
+        <!-- Sección de informes - Mejor estructura para responsive -->
+        <div class="report-section responsive-section">
+            <div class="section-header">
+                <h5 class="section-title">
+                    <i class="bi bi-file-earmark-bar-graph section-title-icon"></i>
+                    Generar Informes
+                </h5>
+            </div>
+            <div class="section-body responsive-filters">
+                <div class="filters-row">
+                    <div class="filter-item responsive-filter">
+                        <select class="filter-input" id="tipo-informe">
+                            <option value="medico">Por Médico</option>
+                            <option value="paciente">Por Paciente</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item responsive-filter" id="filtro-rut-container">
+                        <div class="input-with-button responsive-search">
+                            <input type="text" 
+                                   class="filter-input" 
+                                   id="rut-busqueda"
+                                   placeholder="Ingrese RUT"
+                                   pattern="\d{7,8}-[\dKk]">
+                            <button class="search-button responsive-btn" type="button" id="buscar-rut">
+                                <i class="bi bi-search"></i> <span class="btn-text">Buscar</span>
+                            </button>
+                        </div>
+                        <div id="resultado-busqueda" class="search-result responsive-result">
+                            <div class="result-display">
+                                <span class="result-text">
+                                    <strong id="rut-resultado">12.345.678-9</strong> - 
+                                    <span id="nombre-resultado">Nombre del profesional/paciente</span>
+                                </span>
+                                <button class="select-button responsive-btn" id="seleccionar-rut">
+                                    <i class="bi bi-check"></i> <span class="btn-text">Seleccionar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-item responsive-filter">
+                        <div class="date-range-group responsive-dates">
+                            <input type="date" class="filter-input" id="fecha-inicio">
+                            <span class="date-separator">a</span>
+                            <input type="date" class="filter-input" id="fecha-fin">
+                        </div>
+                    </div>
+                    
+                    <div class="filter-item responsive-filter">
+                        <button class="generate-report-button responsive-btn" id="generar-informe">
+                            <i class="bi bi-file-earmark-pdf"></i> <span class="btn-text">Generar Informe</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tablas con contenedores responsive -->
+        <div class="report-section responsive-section">
+            <div class="section-header">
+                <h5 class="section-title">
+                    <i class="bi bi-calendar3 section-title-icon"></i>
+                    Próximas Citas
+                </h5>
+            </div>
+            <div class="section-body">
+                <div class="data-table-container responsive-table">
+                    <table class="data-table" id="tabla-citas">
+                        <thead>
+                            <tr>
+                                <th data-responsive-label="Paciente">Paciente</th>
+                                <th data-responsive-label="Médico">Médico</th>
+                                <th data-responsive-label="Fecha">Fecha/Hora</th>
+                                <th data-responsive-label="Estado">Estado</th>
+                                <th data-responsive-label="Acciones">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="report-section responsive-section">
+            <div class="section-header">
+                <h5 class="section-title">
+                    <i class="bi bi-people section-title-icon"></i>
+                    Últimos Registros
+                </h5>
+            </div>
+            <div class="section-body">
+                <div class="data-table-container responsive-table">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th data-responsive-label="Nombre">Nombre</th>
+                                <th data-responsive-label="Tipo">Tipo</th>
+                                <th data-responsive-label="Registro">Fecha Registro</th>
+                                <th data-responsive-label="Estado">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script src="{% static 'Mediapp/js/loadComponents.js' %}"></script>
+    <script src="{% static 'Mediapp/js/admin.js' %}"></script>
+</body>
+</html>

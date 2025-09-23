@@ -1,0 +1,301 @@
+/* ==================== */
+/* 1. VARIABLES ESPECÍFICAS PACIENTE */
+/* ==================== */
+:root {
+    --altura-contenedor-reservas: 400px;
+    --altura-horas: 100px;
+    --color-borde-cita: rgba(76, 59, 107, 0.2);
+    --color-fondo-header-reserva: #4c3b6b;
+    --color-fondo-card-medico-hover: rgba(111, 66, 193, 0.05);
+}
+
+/* ==================== */
+/* 2. ESTILOS COMUNES PARA PACIENTE */
+/* ==================== */
+/* 2.1 Estilos para tarjetas y contenedores */
+.paciente-card {
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+.paciente-card-header {
+    background-color: var(--azul-oscuro);
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.paciente-card-header .section-title {
+    color: white;
+    font-size: 1.1rem;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* 2.2 Títulos y textos específicos */
+.seccion-titulo {
+    color: var(--azul-oscuro);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ==================== */
+/* 3. ESTILOS PARA CITAS.HTML */
+/* ==================== */
+/* 3.1 Tarjeta de cita */
+.card-cita {
+    border-left: 4px solid var(--color-primario);
+    background-color: white;
+    margin-bottom: 15px;
+    transition: all 0.3s;
+    border-radius: 8px;
+    border: 1px solid var(--color-borde-cita);
+}
+
+.card-cita:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 3.2 Separador */
+.separador {
+    border-top: 1px dashed #dee2e6;
+    margin: 10px 0;
+}
+
+/* 3.3 Badge de estado */
+.badge-agendada {
+    background-color: var(--color-agendada-bg);
+    color: var(--color-success);
+    border: 1px solid rgba(25, 135, 84, 0.3);
+    padding: 0.35em 0.65em;
+    font-weight: 500;
+    border-radius: 0.25rem;
+}
+
+/* 3.4 Botones de cita */
+.card-cita .btn-cita {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    min-width: 100px !important;
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.8rem !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    cursor: pointer !important;
+    border: 1px solid !important;
+    border-radius: 0.25rem !important;
+    transition: all 0.2s ease-in-out !important;
+    background-color: white !important;
+}
+
+.card-cita .btn-cancelar {
+    color: var(--color-peligro) !important;
+    border-color: var(--color-peligro) !important;
+}
+
+.card-cita .btn-cancelar:hover {
+    background-color: var(--color-peligro) !important;
+    color: white !important;
+}
+
+.card-cita .btn-completar {
+    color: var(--color-primario) !important;
+    border-color: var(--color-primario) !important;
+}
+
+.card-cita .btn-completar:hover {
+    background-color: var(--color-primario) !important;
+    color: white !important;
+}
+
+/* 3.5 Contenedores de citas e historial */
+#citas-container,
+#historial-container {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+#historial-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+#historial-container::-webkit-scrollbar-thumb {
+    background-color: var(--color-primario);
+    border-radius: 3px;
+}
+
+/* 3.6 Items de historial */
+.historial-item {
+    border-left: 4px solid var(--morado-claro);
+    background-color: white;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--color-borde-cita);
+}
+
+/* ==================== */
+/* 4. ESTILOS PARA RESERVAS.HTML */
+/* ==================== */
+/* 4.1 Contenedor principal */
+#reservas-container {
+    max-height: var(--altura-contenedor-reservas);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 4.2 Tarjeta de médico */
+.card-medico {
+    cursor: pointer;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s;
+    border-radius: 8px;
+    background-color: white;
+}
+
+.card-medico:hover {
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.1);
+}
+
+.card-medico.seleccionado {
+    border-color: var(--color-primario);
+    background-color: var(--color-fondo-card-medico-hover);
+}
+
+/* 4.3 Botones de hora */
+.hora-btn {
+    margin: 0.25rem;
+    width: 80px;
+    border: 1px solid var(--color-primario);
+    color: var(--color-primario);
+    transition: all 0.2s;
+    border-radius: 4px;
+    padding: 0.375rem 0.75rem;
+    background-color: white;
+}
+
+.hora-btn:hover, 
+.hora-btn.active {
+    background: var(--color-primario);
+    color: white;
+}
+
+/* 4.4 Contenedor de horas */
+#horasContainer {
+    max-height: var(--altura-horas);
+    min-height: var(--altura-horas);
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+/* 4.5 Header de reserva */
+.reserva-header {
+    background-color: var(--color-fondo-header-reserva) !important;
+    color: white !important;
+    padding: 0.75rem 1.25rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.reserva-header .section-title {
+    color: white !important;
+    font-size: 1.2rem !important;
+    margin-bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+/* ==================== */
+/* 5. ESTILOS PARA PERFIL.HTML */
+/* ==================== */
+/* 5.1 Campos de solo lectura */
+.readonly-field {
+    background-color: #f8f9fa;
+    border: 1px dashed #ced4da;
+    color: #495057;
+    cursor: not-allowed;
+}
+
+/* 5.2 Botón de edición */
+.btn-outline-primary {
+    color: var(--color-primario);
+    border-color: var(--color-primario);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--color-primario);
+    color: white;
+}
+
+/* 5.3 Contenedor de botón guardar */
+#btnGuardarContainer {
+    transition: all 0.3s ease;
+}
+
+/* ==================== */
+/* 6. MEDIA QUERIES */
+/* ==================== */
+@media (max-width: 768px) {
+    /* 6.1 Ajustes generales para tablet */
+    .paciente-card-body .row > div {
+        margin-bottom: 0.75rem;
+    }
+    
+    .paciente-card-header .section-title,
+    .reserva-header .section-title {
+        font-size: 1rem;
+    }
+    
+    .hora-btn {
+        width: 70px;
+    }
+    
+    /* 6.2 Ajustes para perfil */
+    .perfil-input-group {
+        margin-bottom: 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    /* 6.3 Ajustes para móviles */
+    .card-cita .btn-cita {
+        min-width: 80px !important;
+        font-size: 0.7rem !important;
+        padding: 0.2rem 0.4rem !important;
+    }
+    
+    .hora-btn {
+        width: 60px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    /* 6.4 Ajustes para secciones de perfil */
+    .seccion-perfil {
+        padding: 0.75rem;
+    }
+}
+
+/* Asegura que el footer siempre esté abajo */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+

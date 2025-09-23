@@ -1,0 +1,88 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | Sistema Médico</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="{% static 'Mediapp/css/comun.css' %}" rel="stylesheet" />
+  <script>
+    const APP_ROUTES = {
+      paciente: {
+        reservas: "{% url 'reservas_paciente' %}",
+        citas: "{% url 'citas_paciente' %}",
+        perfil: "#",
+        index: "{% url 'index' %}"
+      },
+      medico: {
+        agenda: "{% url 'agenda_medico' %}",
+        perfil: "#"
+      },
+      admin: {
+        dashboard: "{% url 'dashboard_admin' %}"
+      },
+      general: {
+        login: "{% url 'login' %}",
+        registro: "{% url 'registro' %}",
+        recuperar: "{% url 'password_reset' %}",
+        index: "{% url 'index' %}"
+      }
+    };
+  </script>
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <main class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card shadow">
+          <div class="card-body p-5">
+            <h2 class="card-title text-center mb-4">Iniciar Sesión</h2>
+
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+              {% endfor %}
+            {% endif %}
+
+            <form method="POST" id="login-form" novalidate>
+              {% csrf_token %}
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+              </div>
+
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Ingresar</button>
+              </div>
+
+              <div class="text-center mt-3">
+                <a href="{% url 'account_reset_password' %}" class="text-decoration-none">¿Olvidaste tu contraseña?</a>
+              </div>
+
+              <div class="text-center mt-2">
+                <a href="{% url 'registro' %}" class="text-decoration-none">¿No tienes cuenta? Regístrate</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'Mediapp/js/loadComponents.js' %}"></script>
+  <script src="{% static 'Mediapp/js/validaciones.js' %}"></script>
+</body>
+</html>

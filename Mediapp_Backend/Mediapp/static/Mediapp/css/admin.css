@@ -1,0 +1,586 @@
+/* 1. ESTILOS BASE */
+.admin-dashboard {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px 15px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    box-sizing: border-box;
+}
+
+/* 2. TARJETAS DE ESTADO */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.dashboard-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.25s ease;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.card-icon-appointments { color: #7f8fd4; }
+.card-icon-doctors { color: #38b000; }
+.card-icon-patients { color: #00b4d8; }
+.card-icon-pending { color: #f77f00; }
+
+.card-title {
+    font-size: 14px;
+    color: #5c5c5c;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.card-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2b2b2b;
+    line-height: 1.2;
+}
+
+/* Responsive para tarjetas */
+@media (max-width: 768px) {
+    .dashboard-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .dashboard-card {
+        padding: 15px;
+    }
+    
+    .card-value {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .card-icon {
+        font-size: 22px;
+    }
+    
+    .card-title {
+        font-size: 13px;
+    }
+    
+    .card-value {
+        font-size: 22px;
+    }
+}
+
+/* 3. PANEL DE INFORMES */
+.report-section {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.section-header {
+    padding: 18px 25px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: #333333;
+}
+
+.section-title-icon {
+    margin-right: 12px;
+    font-size: 20px;
+}
+
+.section-body {
+    padding: 25px;
+}
+
+/* 4. FILTROS */
+/* 4. FILTROS */
+.filters-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 25px;
+    align-items: flex-end;
+}
+
+.filter-item {
+    flex: 1 1 240px;
+    min-width: 0;
+}
+
+#tipo-informe,
+.filter-input,
+.search-button,
+.generate-report-button {
+    height: 42px;
+    box-sizing: border-box;
+    font-size: 15px;
+}
+
+.filter-input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    transition: all 0.25s ease;
+    background-color: #fafafa;
+}
+
+.filter-input:focus {
+    border-color: #4361ee;
+    outline: none;
+    background-color: #fff;
+    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1);
+}
+
+.input-with-button {
+    display: flex;
+    width: 100%;
+    position: relative;
+}
+
+.input-with-button .filter-input {
+    border-radius: 6px 0 0 6px;
+    border-right: none;
+    flex: 1;
+    min-width: 0;
+}
+
+.search-button {
+    padding: 0 18px;
+    background: linear-gradient(135deg, #1e3fac, #8586d8);
+    color: white;
+    border: none;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.search-button:hover {
+    background: linear-gradient(135deg, #1a3599, #7a7bcb);
+    transform: translateY(-1px);
+}
+
+.date-range-group {
+    display: flex;
+    align-items: center;
+    height: 42px;
+    gap: 10px;
+    width: 100%;
+}
+
+.date-range-group .filter-input {
+    min-width: 140px;
+    flex: 1;
+}
+
+.date-separator {
+    color: #777;
+    font-size: 14px;
+    padding: 0 5px;
+}
+
+.search-result {
+    margin-top: 15px;
+    padding: 16px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    display: none;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.search-result.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.result-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.result-text {
+    font-size: 15px;
+    flex: 1;
+    min-width: 0;
+    line-height: 1.4;
+}
+
+.result-text strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.select-button {
+    padding: 8px 16px;
+    background: #38b000;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.select-button:hover {
+    background: #32a000;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.generate-report-button {
+    width: auto;
+    min-width: 200px;
+    padding: 0 20px;
+    background: linear-gradient(135deg, #1e3fac, #8586d8);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 44px;
+    margin-left: auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.generate-report-button:disabled {
+    background: #d1d1d1;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.generate-report-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    opacity: 0.95;
+}
+
+/* Responsive para filtros */
+@media (max-width: 992px) {
+    .filters-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .filter-item {
+        width: 100%;
+    }
+    
+    .date-range-group {
+        flex-wrap: wrap;
+        height: auto;
+    }
+    
+    .generate-report-button {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .input-with-button {
+        flex-direction: column;
+    }
+    
+    .input-with-button .filter-input {
+        border-radius: 6px;
+        border-right: 1px solid #e0e0e0;
+    }
+    
+    .search-button {
+        border-radius: 6px;
+        width: 100%;
+    }
+    
+    .date-range-group .filter-input {
+        min-width: 100%;
+    }
+}
+
+/* 5. TABLAS */
+.data-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+.data-table thead {
+    background: #f7f7f7;
+}
+
+.data-table th {
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: #444;
+    font-size: 15px;
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #555;
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tr:hover {
+    background: #fafafa;
+}
+
+/* 6. RESPONSIVE */
+@media (max-width: 1200px) {
+    .admin-dashboard {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 992px) {
+    /* Filtros */
+    .filters-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .filter-item {
+        width: 100%;
+        flex: 1 1 auto;
+    }
+    
+    .date-range-group {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 10px;
+        height: auto;
+    }
+    
+    .generate-report-button {
+        width: 100%;
+        max-width: none;
+        margin: 10px 0 0 0;
+    }
+    
+    /* Tablas */
+    .data-table th,
+    .data-table td {
+        padding: 12px 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Estructura general */
+    .admin-dashboard {
+        padding: 15px;
+    }
+    
+    /* Tarjetas */
+    .dashboard-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .dashboard-card {
+        padding: 16px;
+    }
+    
+    .card-icon {
+        font-size: 22px;
+    }
+    
+    .card-value {
+        font-size: 26px;
+    }
+    
+    /* Filtros */
+    .input-with-button {
+        flex-direction: column;
+    }
+    
+    .input-with-button .filter-input {
+        border-radius: 6px;
+        border-right: 1px solid #e0e0e0;
+        margin-bottom: 10px;
+    }
+    
+    .search-button {
+        border-radius: 6px;
+        width: 100%;
+    }
+    
+    /* Secciones */
+    .section-header {
+        padding: 16px 20px;
+    }
+    
+    .section-body {
+        padding: 20px;
+    }
+    
+    /* Tablas */
+    .data-table-container {
+        margin: 0 -10px;
+        padding: 0 10px;
+    }
+    
+    .data-table th,
+    .data-table td {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Tarjetas */
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-card {
+        padding: 18px 15px;
+    }
+    
+    .card-icon {
+        font-size: 20px;
+    }
+    
+    .card-title {
+        font-size: 13px;
+    }
+    
+    .card-value {
+        font-size: 24px;
+    }
+    
+    /* Filtros */
+    .date-range-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .date-range-group .filter-input {
+        width: 100%;
+    }
+    
+    .date-separator {
+        display: none;
+    }
+    
+    /* Resultados */
+    .result-display {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .select-button {
+        width: 100%;
+        margin-top: 8px;
+    }
+    
+    /* Secciones */
+    .section-header {
+        padding: 14px 16px;
+    }
+    
+    .section-body {
+        padding: 16px;
+    }
+    
+    /* Tablas */
+    .data-table {
+        min-width: 100%;
+    }
+    
+    .data-table th,
+    .data-table td {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 400px) {
+    /* Ajustes finales para móviles pequeños */
+    .admin-dashboard {
+        padding: 12px;
+    }
+    
+    .card-value {
+        font-size: 22px;
+    }
+    
+    .filter-input,
+    .search-button,
+    .generate-report-button {
+        height: 38px;
+        font-size: 14px;
+    }
+    
+    .generate-report-button {
+        height: 42px;
+    }
+}

@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil del Paciente - MediApp</title>
+    <link rel="stylesheet" href="{% static 'Mediapp/css/comun.css' %}">
+    <link rel="stylesheet" href="{% static 'Mediapp/css/paciente.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <main class="main-content">
+        <div class="container">
+            
+
+            <div class="welcome-container">
+                <h3 class="mb-4 text-center">Perfil del Paciente</h3>
+
+                <form id="perfilForm">
+                    <!-- DATOS PERSONALES -->
+                    <h6 class="mb-3">Datos Personales</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre completo</label>
+                            <input type="text" class="form-control" id="nombre" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha de nacimiento</label>
+                            <input type="date" class="form-control" id="fechaNacimiento" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Género</label>
+                            <select class="form-select" id="genero" disabled>
+                                    <option value="">Seleccionar</option>
+                                    <option value="masculino">Masculino</option>
+                                    <option value="femenino">Femenino</option>
+                                    <option value="otro">Otro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Documento de identidad</label>
+                            <input type="text" class="form-control" id="documento" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nacionalidad</label>
+                            <input type="text" class="form-control" id="nacionalidad" disabled>
+                        </div>
+                    </div>
+
+                    <!-- CONTACTO -->
+                    <h6 class="mb-3">Información de Contacto</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Teléfono móvil</label>
+                            <input type="tel" class="form-control" id="telefono" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Correo electrónico</label>
+                            <input type="email" class="form-control" id="email" disabled>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Dirección</label>
+                            <input type="text" class="form-control" id="direccion" disabled>
+                        </div>
+                    </div>
+
+                    <!-- DATOS MÉDICOS -->
+                    <h6 class="mb-3">Datos Médicos Relevantes</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Grupo sanguíneo</label>
+                            <input type="text" class="form-control" id="grupoSanguineo" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Alergias</label>
+                            <input type="text" class="form-control" id="alergias" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Enfermedades crónicas</label>
+                            <input type="text" class="form-control" id="condiciones" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Medicamentos actuales</label>
+                            <input type="text" class="form-control" id="medicamentos" disabled>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Historial de cirugías</label>
+                            <textarea class="form-control" id="cirugias" rows="2" disabled></textarea>
+                        </div>
+                    </div>
+
+                    <!-- BOTONES -->
+<div class="text-end d-flex flex-wrap gap-2 justify-content-end">
+    
+    <a href="{% url 'reservas_paciente' %}" class="btn btn-outline-dark">
+        <i class="bi bi-calendar-plus"></i> Reservar Hora
+    </a>
+    <a href="{% url 'citas_paciente' %}" class="btn btn-primary">
+        <i class="bi bi-clipboard2-heart"></i> Ver Citas
+    </a>
+    <button type="button" class="btn btn-outline-dark" id="btnEditar">Editar</button>
+    <button type="submit" class="btn btn-primary d-none" id="btnGuardar">Guardar cambios</button>
+</div>
+
+
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script id="datosPaciente" type="application/json">{{ paciente_json|safe }}</script>
+
+    <script src="{% static 'Mediapp/js/loadComponents.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{% static 'Mediapp/js/paciente.js' %}"></script>
+</body>
+</html>

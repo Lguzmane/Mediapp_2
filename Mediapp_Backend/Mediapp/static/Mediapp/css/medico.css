@@ -1,0 +1,515 @@
+/* ============================================ */
+/* 1. VARIABLES Y CONFIGURACIÓN GLOBAL */
+/* ============================================ */
+:root {
+  /* Paleta de colores profesional */
+  --azul-profesional: #5a6d8a;
+  --azul-soft: #8a9bb8;
+  --gris-azulado: #e0e5ec;
+  --texto-oscuro: #2d3748;
+  --texto-medio: #4a5568;
+  --sombra-profesional: 0 1px 2px rgba(45, 55, 72, 0.08);
+  
+  /* Espaciados consistentes */
+  --espaciado-xs: 4px;
+  --espaciado-sm: 8px;
+  --espaciado-md: 16px;
+  --espaciado-lg: 24px;
+}
+
+/* ============================================ */
+/* 2. ESTRUCTURA BASE DE LA PÁGINA */
+/* ============================================ */
+.agenda-page {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--texto-oscuro);
+  user-select: none;
+  max-width: 100%;
+  padding: var(--espaciado-md);
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.container.agenda-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--espaciado-sm) var(--espaciado-xs);
+}
+
+/* ============================================ */
+/* 3. COMPONENTES DE LA INTERFAZ */
+/* ============================================ */
+
+/* 3.1 Encabezado y controles */
+.agenda-page h1 {
+  font-size: 1.4rem;
+  margin: var(--espaciado-xs) 0 var(--espaciado-md);
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.agenda-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--espaciado-md);
+  gap: var(--espaciado-sm);
+  flex-wrap: wrap;
+}
+
+.date-navigation {
+  display: flex;
+  align-items: center;
+  gap: var(--espaciado-xs);
+}
+
+#current-week {
+  font-size: 1rem;
+  font-weight: 600;
+  min-width: 180px;
+  text-align: center;
+  color: var(--azul-profesional);
+}
+
+/* 3.2 Botones */
+.btn {
+  padding: var(--espaciado-xs) var(--espaciado-sm);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.btn-primary {
+  background-color: var(--azul-profesional);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: var(--azul-soft);
+  box-shadow: var(--sombra-profesional);
+}
+
+.btn-secondary {
+  background-color: var(--gris-azulado);
+  color: var(--texto-oscuro);
+}
+
+.btn-secondary:hover {
+  background-color: #c5cee0;
+}
+
+.btn-warning {
+  background-color: #c48400;
+  color: white;
+}
+
+.btn-warning:hover {
+  background-color: #d39e00;
+}
+
+.fixed-reserve-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  padding: var(--espaciado-sm) var(--espaciado-md);
+  border-radius: 5px;
+  box-shadow: var(--sombra-profesional);
+  display: none;
+}
+
+/* 3.3 Calendario */
+.agenda-container {
+  overflow-x: auto;
+}
+
+.calendar-header {
+  display: flex;
+  background-color: var(--azul-profesional);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 500;
+  user-select: none;
+  border-radius: 6px 6px 0 0;
+}
+
+.time-column {
+  width: 60px;
+  padding: var(--espaciado-xs) 6px;
+  text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.25);
+}
+
+.day-column {
+  flex: 1;
+  padding: var(--espaciado-xs) 4px;
+  text-align: center;
+  border-left: 1px solid rgba(255,255,255,0.15);
+  min-width: 60px;
+}
+
+.calendar-body {
+  background-color: #fff;
+  border: 1px solid var(--gris-azulado);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  overflow: hidden;
+  user-select: none;
+}
+
+.time-slot {
+  display: flex;
+  min-height: 42px;
+  border-bottom: 1px solid var(--gris-azulado);
+}
+
+.time-slot:last-child {
+  border-bottom: none;
+}
+
+.time-label {
+  width: 60px;
+  padding: 6px 0;
+  font-size: 0.75rem;
+  color: var(--texto-medio);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--gris-azulado);
+  background-color: #f9fafc;
+}
+
+.day-cell {
+  flex: 1;
+  padding: 4px 6px;
+  border-right: 1px solid var(--gris-azulado);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.day-cell:last-child {
+  border-right: none;
+}
+
+.day-cell:hover:not(.appointment):not(.blocked) {
+  background-color: rgba(90, 109, 138, 0.07);
+}
+
+.day-cell.selected {
+  background-color: #e3f2fd;
+  border: 2px solid #2196F3;
+}
+
+/* 3.4 Citas y bloques */
+.day-cell.appointment {
+  background-color: rgba(138, 155, 184, 0.15);
+  border-left: 3px solid var(--azul-soft);
+}
+
+.day-cell.blocked {
+  background-color: rgba(90, 109, 138, 0.1);
+  border-left: 3px solid var(--azul-profesional);
+  cursor: default;
+}
+
+.appointment-badge {
+  background-color: white;
+  border-radius: 3px;
+  padding: 3px 6px;
+  margin: 2px 0;
+  font-size: 0.75rem;
+  color: var(--texto-oscuro);
+  box-shadow: var(--sombra-profesional);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: text;
+}
+
+.appointment-badge span {
+  font-weight: 600;
+  display: block;
+}
+
+.appointment-badge small {
+  font-size: 0.7rem;
+  color: var(--texto-medio);
+  display: block;
+  margin-top: 1px;
+}
+
+.blocked-badge {
+  font-size: 0.7rem;
+  color: var(--azul-profesional);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-weight: 600;
+  user-select: none;
+}
+
+/* ============================================ */
+/* 4. MODALES Y FORMULARIOS */
+/* ============================================ */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+  padding: var(--espaciado-md);
+  box-sizing: border-box;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 60px auto;
+  padding: var(--espaciado-lg) 28px;
+  border-radius: 8px;
+  max-width: 420px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  position: relative;
+  font-size: 0.9rem;
+  color: var(--texto-oscuro);
+}
+
+#appointment-modal .modal-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  margin: 0;
+  width: 90%;
+  max-width: 500px;
+  padding: 25px;
+  border-radius: 10px;
+}
+
+.modal .close {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.modal .close:hover {
+  color: black;
+}
+
+#appointment-modal h2 {
+  color: var(--azul-profesional);
+  margin: 0 30px 20px 0;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--gris-azulado);
+  font-size: 1.4rem;
+  line-height: 1.3;
+}
+
+/* 4.1 Formularios */
+form .form-group {
+  margin-bottom: var(--espaciado-md);
+}
+
+form label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--texto-medio);
+  font-size: 0.85rem;
+}
+
+form input[type="date"],
+form input[type="time"],
+form input[type="text"] {
+  width: 100%;
+  padding: var(--espaciado-xs) var(--espaciado-sm);
+  font-size: 0.9rem;
+  border: 1px solid var(--gris-azulado);
+  border-radius: 4px;
+  outline-offset: 2px;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+form input:focus {
+  border-color: var(--azul-profesional);
+}
+
+form button[type="submit"] {
+  width: 100%;
+  background-color: var(--azul-profesional);
+  color: white;
+  font-weight: 600;
+  padding: var(--espaciado-sm) 0;
+  border-radius: 5px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button[type="submit"]:hover {
+  background-color: var(--azul-soft);
+  box-shadow: var(--sombra-profesional);
+}
+
+/* 4.2 Detalles de cita */
+#appointment-details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--espaciado-sm) 15px;
+  align-items: baseline;
+  line-height: 1.4;
+}
+
+#appointment-details p {
+  margin: 0;
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--espaciado-sm);
+}
+
+#appointment-details p strong {
+  color: var(--azul-profesional);
+  min-width: 80px;
+}
+
+#appointment-details p:has(strong:contains("Notas:")) {
+  margin-top: var(--espaciado-xs);
+  padding-top: var(--espaciado-xs);
+  border-top: 1px dashed var(--gris-azulado);
+}
+
+/* 4.3 Acciones del modal */
+.modal-actions {
+  margin-top: var(--espaciado-md);
+  display: flex;
+  justify-content: center;
+  gap: var(--espaciado-md);
+}
+
+#appointment-modal .modal-actions .btn {
+  min-width: 130px;
+  padding: var(--espaciado-sm) var(--espaciado-md);
+  height: auto;
+  line-height: 1.3;
+}
+
+/* ============================================ */
+/* 5. MEDIA QUERIES - RESPONSIVIDAD */
+/* ============================================ */
+
+@media (max-width: 768px) {
+  .agenda-page {
+    padding: var(--espaciado-sm) var(--espaciado-xs);
+  }
+  
+  .agenda-controls {
+    flex-direction: column;
+  }
+  
+  .date-navigation,
+  .agenda-actions {
+    width: 100%;
+  }
+  
+  .agenda-actions {
+    justify-content: flex-end;
+  }
+  
+  #current-week {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .time-column,
+  .time-label {
+    width: 45px;
+    font-size: 0.65rem;
+  }
+  
+  .day-column,
+  .day-cell {
+    min-width: 50px;
+  }
+  
+  .btn {
+    font-size: 0.75rem;
+    padding: var(--espaciado-xs) 10px;
+  }
+  
+  .time-slot {
+    min-height: 32px;
+  }
+  
+  .appointment-badge {
+    font-size: 0.62rem;
+    padding: 1.5px 3px;
+  }
+  
+  .blocked-badge {
+    font-size: 0.6rem;
+  }
+  
+  /* Ajustes para el modal */
+  #appointment-modal .modal-content {
+    padding: var(--espaciado-md) var(--espaciado-sm);
+  }
+  
+  #appointment-details,
+  #appointment-details p {
+    grid-template-columns: 1fr;
+    gap: var(--espaciado-xs);
+  }
+  
+  #appointment-modal .modal-actions {
+    flex-wrap: wrap;
+  }
+  
+  #appointment-modal .modal-actions .btn {
+    min-width: 48%;
+    padding: var(--espaciado-sm) 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .time-column,
+  .time-label {
+    width: 40px;
+  }
+  
+  .day-column,
+  .day-cell {
+    min-width: 45px;
+  }
+  
+  .fixed-reserve-btn {
+    right: 10px;
+    bottom: 10px;
+    padding: var(--espaciado-xs) var(--espaciado-sm);
+    font-size: 0.8rem;
+  }
+}
