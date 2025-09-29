@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
         updateWeekDisplay();
         updateCalendarHeader();
         generateTimeSlots();
+        markHolidaysInView(); // ← NUEVO: pinta y desactiva días feriados
         loadAppointments();
         loadBlockedSlots();
     }
@@ -131,6 +132,76 @@ document.addEventListener('DOMContentLoaded', function () {
         return d;
     }
 
+//NUEVO 24-09
+
+// ===== FERIADOS (cache + fetch + pintado) =====
+const __feriadosCache = {}; // { '2025': [ { fecha:'2025-01-01', nombre:'Año Nuevo' }, ... ] }
+
+async function fetchFeriados(year) {
+  if (__feriadosCache[year]) return __feriadosCache[year];
+
+  // Usar Nager directo (evita 502 del backend y no muestra error en Network)
+  const r = await fetch(`https://date.nager.at/api/v3/publicholidays/${year}/CL`);
+  if (!r.ok) { __feriadosCache[year] = []; return []; }
+  const d = await r.json();
+  const normalizado = Array.isArray(d)
+    ? d.map(h => ({ fecha: h.date, nombre: h.localName || h.name }))
+    : [];
+  __feriadosCache[year] = normalizado;
+  console.log('[Feriados] fuente: Nager', year, normalizado.length);
+  return normalizado;
+}
+
+
+function __findHoliday(dateObj, feriados) {
+  const ymd = dateObj.toISOString().slice(0, 10); // YYYY-MM-DD
+  return feriados.find(h => (h.fecha || h.date) === ymd);
+}
+
+async function markHolidaysInView() {
+  const start = getStartOfWeek(currentDate);
+  const year = start.getFullYear();
+  let feriados = [];
+  try { feriados = await fetchFeriados(year); } catch { feriados = []; }
+
+  const headers = document.querySelectorAll('.calendar-header .day-column'); // 6 columnas (Lu–Sa)
+  for (let i = 0; i < 6; i++) {
+    const d = new Date(start);
+    d.setDate(d.getDate() + i);
+    const fer = __findHoliday(d, feriados);
+    const headerCol = headers[i];
+    if (!headerCol) continue;
+
+    // limpia estado anterior
+    headerCol.classList.remove('holiday');
+    headerCol.removeAttribute('title');
+    const badgeOld = headerCol.querySelector('.holiday-badge');
+    if (badgeOld) badgeOld.remove();
+    document.querySelectorAll(`.day-cell[data-day="${i}"]`).forEach(c => {
+      c.classList.remove('holiday');
+      delete c.dataset.holiday;
+    });
+
+    if (fer) {
+      headerCol.classList.add('holiday');
+      headerCol.title = fer.nombre || 'Feriado';
+      const badge = document.createElement('span');
+      badge.className = 'holiday-badge';
+      badge.textContent = 'Feriado';
+      headerCol.appendChild(badge);
+
+      // desactivar visualmente los slots del día
+      document.querySelectorAll(`.day-cell[data-day="${i}"]`).forEach(c => {
+        c.classList.add('holiday');
+        c.dataset.holiday = '1';
+      });
+    }
+  }
+}
+
+
+
+
     // =============================================
     // GENERACIÓN DE HORARIOS
     // =============================================
@@ -170,17 +241,22 @@ document.addEventListener('DOMContentLoaded', function () {
     // =============================================
     // MANEJO DE INTERACCIÓN CON HORARIOS
     // =============================================
-    function handleTimeSlotClick(cell, date) {
-        const appointment = appointments.find(app => new Date(app.date).getTime() === date.getTime());
-        const isBlocked = blockedSlots.some(b => date >= new Date(b.inicio) && date < new Date(b.fin));
-
-
-        if (appointment) {
-            showAppointmentDetails(appointment);
-        } else {
-            toggleSlotSelection(cell, date);
-        }
+function handleTimeSlotClick(cell, date) {
+    // Validar si es feriado
+    if (cell.classList.contains('holiday') || cell.dataset.holiday === '1') {
+        showFeedbackMessage('Día feriado: no disponible', 'error');
+        return;
     }
+    
+    const appointment = appointments.find(app => new Date(app.date).getTime() === date.getTime());
+    const isBlocked = blockedSlots.some(b => date >= new Date(b.inicio) && date < new Date(b.fin));
+
+    if (appointment) {
+        showAppointmentDetails(appointment);
+    } else {
+        toggleSlotSelection(cell, date);
+    }
+}
 
     function toggleSlotSelection(cell, date) {
         const existing = selectedSlots.find(s => s.cell === cell);

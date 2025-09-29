@@ -1,11 +1,15 @@
 from django.contrib import admin
 from django.urls import path, include
 from Mediapp import views as mediapp_views
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     # Admin Django
     path('admin/', admin.site.urls),
-
+    path('api/', include('Mediapp.api_urls')),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    
     # Autenticación propia
     path('login/', mediapp_views.login_view, name='login'),
     path('registro/', mediapp_views.registro_view, name='registro'),

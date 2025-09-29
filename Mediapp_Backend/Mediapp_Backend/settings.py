@@ -14,6 +14,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'rest_framework',
+'rest_framework_simplejwt',
     'Mediapp',
     'allauth',
     'allauth.account',
@@ -102,3 +104,19 @@ SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SECURE = False
+
+# ==== DRF / JWT (Entrega 3) ====
+REST_FRAMEWORK = {
+    # Mantenemos sesiones para tus vistas HTML y agregamos JWT para las APIs nuevas
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    # Esta permisión por defecto solo aplica a vistas DRF (no afecta tus templates HTML)
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
+    # Paginación estándar (útil para listados API)
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 20,
+}

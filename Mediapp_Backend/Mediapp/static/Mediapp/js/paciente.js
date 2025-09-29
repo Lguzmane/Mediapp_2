@@ -1,6 +1,6 @@
-console.log("paciente.js cargado");
-document.addEventListener('DOMContentLoaded', function() {
+console.log('PACIENTE.JS v3');
 
+document.addEventListener('DOMContentLoaded', function() {
 
     let medicoSeleccionado = null;
     let fechaSeleccionada = null;
@@ -36,7 +36,6 @@ async function guardarCita(nuevaCita) {
     }
 }
 
-
     // ===== RESERVAS =====
     // ===== RESERVAS (REAL, SIN DATOS HARDCODE) =====
 if (document.getElementById('selectEspecialidad') && window.location.pathname.includes('paciente/reservas')) {
@@ -69,28 +68,98 @@ if (document.getElementById('selectEspecialidad') && window.location.pathname.in
 
     if (!espId) { seccionMedicos.classList.add('d-none'); return; }
 
-    try {
-      const res = await fetch(`/api/medicos/?especialidad_id=${encodeURIComponent(espId)}`);
-      if (!res.ok) throw new Error('No se pudieron cargar médicos');
-      const medicos = await res.json();
+try {
+  console.log('[RESERVAS] bloque NUEVO cargado');
+  const res = await fetch(`/api/medicos/?especialidad_id=${encodeURIComponent(espId)}`, {
+    headers: { 'Accept': 'application/json' }
+  });
+  if (!res.ok) throw new Error(`No se pudieron cargar médicos (HTTP ${res.status})`);
 
-      listaMedicos.innerHTML = '';
-      medicos.forEach(med => {
-        listaMedicos.insertAdjacentHTML('beforeend', `
-          <div class="col-md-6">
-            <div class="card medico-card" data-medico-id="${med.id}">
-              <div class="card-body text-center">
-                <h6 class="card-title">${med.nombre}</h6>
-                <button class="btn btn-sm btn-outline-primary btn-seleccionar-medico">Seleccionar</button>
-              </div>
-            </div>
-          </div>`);
-      });
-      seccionMedicos.classList.remove('d-none');
-    } catch (e) {
-      console.error(e);
-      Swal.fire('Error', 'No se pudieron cargar los médicos', 'error');
+  // Evitar redirecciones/HTML: exigir JSON
+  const ct = (res.headers.get('content-type') || '').toLowerCase();
+  if (!ct.includes('application/json')) {
+    const preview = (await res.text()).slice(0, 200);
+    console.warn('Respuesta no-JSON desde /api/medicos/:', preview);
+    throw new Error('El endpoint /api/medicos/ no devolvió JSON.');
+  }
+
+  const payload = await res.json();
+
+  // Normalizar estructura: aceptar [ ... ] o { medicos:[...] } o { results:[...] }
+  const medicos = Array.isArray(payload)
+    ? payload
+    : (payload.medicos || payload.results || []);
+
+  listaMedicos.innerHTML = '';
+
+  if (!Array.isArray(medicos)) {
+    console.error('Payload inesperado desde /api/medicos/:', payload);
+    throw new Error('Formato inesperado de la API de médicos.');
+  }
+
+  if (medicos.length === 0) {
+    listaMedicos.innerHTML = `
+      <div class="col-12">
+        <div class="alert alert-secondary">No hay médicos para esta especialidad.</div>
+      </div>`;
+  
+      } else {
+  // Helper para obtener nombre desde distintos esquemas
+  const getNombre = (m) => {
+    const desdeUsuario =
+      (m.usuario && (
+        m.usuario.nombre_completo ||
+        [m.usuario.nombres, m.usuario.apellidos].filter(Boolean).join(' ') ||
+        [m.usuario.first_name, m.usuario.last_name].filter(Boolean).join(' ')
+      )) || null;
+
+    const desdeUser =
+      (m.user && (
+        m.user.full_name ||
+        [m.user.first_name, m.user.last_name].filter(Boolean).join(' ')
+      )) || null;
+
+    return (
+      m.nombre ||
+      m.nombre_completo ||
+      m.full_name ||
+      [m.nombres, m.apellidos].filter(Boolean).join(' ') ||
+      desdeUsuario ||
+      desdeUser ||
+      `Médico #${m.id || m.id_medico || m.medico_id || 's/i'}`
+    );
+  };
+
+  medicos.forEach(med => {
+    const idMed = med.id ?? med.id_medico ?? med.medico_id ?? '';
+    const nombre = getNombre(med);
+
+    // (debug) Mira en consola el primer item para mapear campos reales
+    if (medicos.indexOf(med) === 0) {
+      console.log('[DEBUG] ejemplo médico recibido:', med);
     }
+
+    listaMedicos.insertAdjacentHTML('beforeend', `
+      <div class="col-md-6">
+        <div class="card medico-card" data-medico-id="${idMed}">
+          <div class="card-body text-center">
+            <h6 class="card-title">${nombre}</h6>
+            <button class="btn btn-sm btn-outline-primary btn-seleccionar-medico">Seleccionar</button>
+          </div>
+        </div>
+      </div>`);
+  });
+}
+
+
+  seccionMedicos.classList.remove('d-none');
+} catch (e) {
+  console.error(e);
+  Swal.fire('Error', 'No se pudieron cargar los médicos', 'error');
+}
+
+
+    
   });
 
   // 3) Seleccionar médico → mostrar fecha y luego disponibilidad
@@ -180,7 +249,6 @@ if (document.getElementById('selectEspecialidad') && window.location.pathname.in
     }
   });
 }
-
 
     // ===== CITAS =====
         // ===== CITAS =====
@@ -369,8 +437,6 @@ if (document.getElementById('selectEspecialidad') && window.location.pathname.in
         });
     }
 
- 
-
 // ========================
 // PERFIL DEL PACIENTE
 // ========================
@@ -416,7 +482,6 @@ if (btnEditar && btnGuardar) {
     btnEditar.classList.add("d-none");
   });
 }
-
 
 // 4. Enviar datos actualizados al backend
 if (form) {
@@ -479,7 +544,6 @@ if (form) {
   });
 }
 
-
 // CSRF Token desde cookie
 function getCSRFToken() {
     const name = "csrftoken";
@@ -487,5 +551,35 @@ function getCSRFToken() {
     return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
 }
 
-} // cierre final de DOMContentLoaded
-);
+}); // cierre final de DOMContentLoaded
+
+// === ICD-10: autocompletar (igual que lo probaste en consola) ===
+(() => {
+  const inp = document.querySelector('#diagnostico, input[name="diagnostico"]:not([type="hidden"]):not([disabled])');
+  if (!inp) { console.log('sin input'); return; }
+
+  let dl = document.getElementById('icd-list');
+  if (!dl) { dl = document.createElement('datalist'); dl.id = 'icd-list'; inp.after(dl); }
+  inp.setAttribute('list','icd-list');
+
+  const run = async () => {
+    const q = (inp.value || '').trim();
+    if (q.length < 3) { dl.innerHTML = ''; return; }
+    const r = await fetch('/api/icd/search/?q=' + encodeURIComponent(q));
+    if (!r.ok) { dl.innerHTML=''; console.log('[ICD] HTTP', r.status); return; }
+    const d = await r.json(); // {results:[{code,title},...]}
+    dl.innerHTML = (d.results || []).slice(0,20)
+      .map(x => `<option value="${x.title} — ${x.code}">`).join('');
+    console.log('[ICD] opciones:', dl.children.length);
+  };
+
+  let t;
+  document.addEventListener('input', ev => {
+    if (ev.target === inp) { clearTimeout(t); t = setTimeout(run, 250); }
+  }, true);
+  inp.addEventListener('focus', run);
+
+  console.log('icd live wired');
+})();
+
+

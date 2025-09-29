@@ -92,6 +92,14 @@
                         </div>
                     </div>
 
+<!-- Diagnóstico (ICD-10) - solo demo, no se guarda -->
+<div class="col-md-12 mt-2">
+  <label class="form-label">Antecedentes (ICD-10) – opcional</label>
+  <input type="text" class="form-control" id="diagnostico"
+         placeholder="Escribe 3+ letras…" list="icd-list">
+  <datalist id="icd-list"></datalist>
+</div>
+
                     <!-- BOTONES -->
 <div class="text-end d-flex flex-wrap gap-2 justify-content-end">
     
@@ -117,6 +125,6 @@
 
     <script src="{% static 'Mediapp/js/loadComponents.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{% static 'Mediapp/js/paciente.js' %}"></script>
+    <script src="{% static 'Mediapp/js/paciente.js' %}?v=3"></script>
 </body>
 </html>
